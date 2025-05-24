@@ -1,29 +1,53 @@
+<!-- src/components/TodoFilter.vue -->
 <template>
-  <div class="filter">
-    <button
-      v-for="type in filters"
-      :key="type"
-      :class="{ active: type === modelValue }"
-      @click="$emit('update:modelValue', type)"
-    >
-      {{ type }}
-    </button>
+  <div class="filters">
+    <label>
+      <input
+        type="checkbox"
+        :checked="showPending"
+        @change="togglePending"
+      />
+      显示未完成
+    </label>
+    <label>
+      <input
+        type="checkbox"
+        :checked="showCompleted"
+        @change="toggleCompleted"
+      />
+      显示已完成
+    </label>
   </div>
 </template>
 
 <script setup lang="ts">
 defineProps<{
-  modelValue: string
+  showPending: boolean
+  showCompleted: boolean
 }>()
 
-const filters = ['全部', '未完成', '已完成']
+const emit = defineEmits<{
+  (e: 'update:showPending', value: boolean): void
+  (e: 'update:showCompleted', value: boolean): void
+}>()
+
+const togglePending = (e: Event) => {
+  emit('update:showPending', (e.target as HTMLInputElement).checked)
+}
+
+const toggleCompleted = (e: Event) => {
+  emit('update:showCompleted', (e.target as HTMLInputElement).checked)
+}
 </script>
 
 <style scoped>
-.filter button {
-  margin-right: 8px;
+.filters {
+  margin: 1em 0;
+  display: flex;
+  gap: 1em;
 }
-.filter .active {
-  font-weight: bold;
+label {
+  cursor: pointer;
+  font-size: 14px;
 }
 </style>
